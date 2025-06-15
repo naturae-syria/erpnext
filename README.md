@@ -112,6 +112,15 @@ To setup the repository locally follow the steps mentioned below:
    bench start
    ```
 
+   If `bench new-site` fails with `Access denied for user 'root'@'localhost'`,
+   configure MariaDB so the `root` user can authenticate with a password:
+   ```bash
+   sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';"
+   sudo mysql -e "FLUSH PRIVILEGES;"
+   ```
+   Replace `root` with the password you'll pass using
+   `--mariadb-root-password`.
+
 2. In a separate terminal window, run the following commands:
    ```
    # Create a new site

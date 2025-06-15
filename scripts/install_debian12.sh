@@ -20,6 +20,12 @@ build-essential redis-server mariadb-server mariadb-client default-libmysqlclien
 wkhtmltopdf curl nodejs npm
 }
 
+configure_mariadb() {
+    log "Configuring MariaDB root password"
+    sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}'"
+    sudo mysql -e "FLUSH PRIVILEGES"
+}
+
 setup_node() {
 if ! command -v node >/dev/null; then
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
@@ -59,13 +65,14 @@ bench start
 }
 
 main() {
-install_dependencies
-setup_node
-install_bench
-init_bench
-create_site
-install_erpnext
-build_and_start
+    install_dependencies
+    configure_mariadb
+    setup_node
+    install_bench
+    init_bench
+    create_site
+    install_erpnext
+    build_and_start
 }
 
 main "$@"
