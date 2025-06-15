@@ -22,8 +22,12 @@ wkhtmltopdf curl nodejs npm
 
 configure_mariadb() {
     log "Configuring MariaDB root password"
-    sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}'"
-    sudo mysql -e "FLUSH PRIVILEGES"
+    if sudo mysql -u root -e "SELECT 1" >/dev/null 2>&1; then
+        sudo mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}'"
+    else
+        sudo mysql -u root -p"${DB_ROOT_PASSWORD}" -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}'"
+    fi
+    sudo mysql -u root -p"${DB_ROOT_PASSWORD}" -e "FLUSH PRIVILEGES"
 }
 
 setup_node() {
