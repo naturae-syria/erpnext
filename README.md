@@ -121,13 +121,23 @@ To setup the repository locally follow the steps mentioned below:
 3. Get the ERPNext app and install it
    ```
    # Get the ERPNext app
-   bench get-app https://github.com/frappe/erpnext
+   bench get-app https://github.com/naturae-syria/erpnext
 
    # Install the app
    bench --site erpnext.localhost install-app erpnext
    ```
 
 4. Open the URL `http://erpnext.localhost:8000/app` in your browser, you should see the app running
+
+### Debian 12 Installation Script
+
+For a quick start on Debian&nbsp;12 you can run the helper script:
+
+```bash
+./scripts/install_debian12.sh
+```
+
+The script installs bench, creates a site and starts the server using the steps mentioned above.
 
 ## Learning and community
 
