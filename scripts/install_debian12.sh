@@ -1,30 +1,71 @@
 #!/usr/bin/env bash
-# Simple installer for ERPNext on Debian 12
-# This script installs bench, creates a site and starts the server
+# End-to-end installer for ERPNext on Debian 12
 set -euo pipefail
 
-# Update package lists and install basic dependencies
-sudo apt update
-sudo apt install -y git python3-dev python3-setuptools python3-pip python3-venv \
-    build-essential redis-server mariadb-server mariadb-client default-libmysqlclient-dev \
-    wkhtmltopdf curl nodejs npm
+BENCH_DIR=${BENCH_DIR:-frappe-bench}
+SITE_NAME=${SITE_NAME:-erpnext.localhost}
+ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-root}
 
-# Install bench
+log() {
+printf "[info] %s\n" "$1"
+}
+
+install_dependencies() {
+log "Updating package lists"
+sudo apt-get update
+log "Installing dependencies"
+sudo apt-get install -y git python3-dev python3-setuptools python3-pip python3-venv \
+build-essential redis-server mariadb-server mariadb-client default-libmysqlclient-dev \
+wkhtmltopdf curl nodejs npm
+}
+
+setup_node() {
+if ! command -v node >/dev/null; then
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs
+fi
+sudo npm install -g yarn
+}
+
+install_bench() {
+log "Installing bench"
 sudo pip3 install --break-system-packages frappe-bench
+}
 
-# Initialize a bench instance
-bench init --frappe-path https://github.com/frappe/frappe --skip-assets frappe-bench
-cd frappe-bench
+init_bench() {
+log "Initializing bench at ${BENCH_DIR}"
+bench init --frappe-path https://github.com/frappe/frappe --skip-assets "$BENCH_DIR"
+cd "$BENCH_DIR"
+}
 
-# Create a new site with default credentials
-bench new-site --admin-password admin --mariadb-root-password root erpnext.localhost
+create_site() {
+log "Creating site ${SITE_NAME}"
+bench new-site --admin-password "$ADMIN_PASSWORD" --mariadb-root-password "$DB_ROOT_PASSWORD" "$SITE_NAME"
+}
 
-# Get ERPNext app from GitHub
+install_erpnext() {
+log "Getting ERPNext app"
 bench get-app https://github.com/naturae-syria/erpnext
+log "Installing ERPNext"
+bench --site "$SITE_NAME" install-app erpnext
+}
 
-# Install the app on the new site
-bench --site erpnext.localhost install-app erpnext
-
-# Build assets and start the server
+build_and_start() {
+log "Building assets"
 bench build
+log "Starting bench"
 bench start
+}
+
+main() {
+install_dependencies
+setup_node
+install_bench
+init_bench
+create_site
+install_erpnext
+build_and_start
+}
+
+main "$@"
