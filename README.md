@@ -129,6 +129,20 @@ To setup the repository locally follow the steps mentioned below:
 
 4. Open the URL `http://erpnext.localhost:8000/app` in your browser, you should see the app running
 
+### Debian 12 Installation Script
+
+For a quick start on Debian&nbsp;12 you can run the helper script:
+
+```bash
+./scripts/install_debian12.sh
+```
+
+The script installs bench, creates a site using [bench](https://github.com/frappe/bench),
+fetches the ERPNext app from
+[naturae-syria/erpnext](https://github.com/naturae-syria/erpnext), and starts the server.
+It uses pip's `--break-system-packages` option so that Debian's externally managed
+environment does not block the installation.
+
 ## Learning and community
 
 1. [Frappe School](https://school.frappe.io) - Learn Frappe Framework and ERPNext from the various courses by the maintainers or from the community.
