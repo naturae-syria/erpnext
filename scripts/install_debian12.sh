@@ -10,7 +10,7 @@ sudo apt install -y git python3-dev python3-setuptools python3-pip python3-venv 
     wkhtmltopdf curl nodejs npm
 
 # Install bench
-sudo pip3 install frappe-bench
+sudo pip3 install --break-system-packages frappe-bench
 
 # Initialize a bench instance
 bench init --frappe-path https://github.com/frappe/frappe --skip-assets frappe-bench
