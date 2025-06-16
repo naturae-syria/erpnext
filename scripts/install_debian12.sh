@@ -49,6 +49,22 @@ bench init --frappe-path https://github.com/frappe/frappe --skip-assets "$BENCH_
 cd "$BENCH_DIR"
 }
 
+start_background_bench() {
+    log "Starting temporary bench to launch Redis"
+    bench start &> /tmp/bench_start.log &
+    BENCH_BG_PID=$!
+    # Give processes time to initialize
+    sleep 5
+}
+
+stop_background_bench() {
+    if [ -n "${BENCH_BG_PID:-}" ] && kill -0 "$BENCH_BG_PID" 2>/dev/null; then
+        log "Stopping temporary bench"
+        kill "$BENCH_BG_PID"
+        wait "$BENCH_BG_PID" || true
+    fi
+}
+
 create_site() {
 log "Creating site ${SITE_NAME}"
 bench new-site --admin-password "$ADMIN_PASSWORD" --mariadb-root-password "$DB_ROOT_PASSWORD" "$SITE_NAME"
@@ -74,8 +90,10 @@ main() {
     setup_node
     install_bench
     init_bench
+    start_background_bench
     create_site
     install_erpnext
+    stop_background_bench
     build_and_start
 }
 
