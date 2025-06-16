@@ -16,7 +16,7 @@ log "Updating package lists"
 sudo apt-get update
 log "Installing dependencies"
 sudo apt-get install -y git python3-dev python3-setuptools python3-pip python3-venv \
-build-essential redis-server mariadb-server mariadb-client default-libmysqlclient-dev \
+build-essential pkg-config redis-server mariadb-server mariadb-client default-libmysqlclient-dev \
 wkhtmltopdf curl nodejs npm
 }
 

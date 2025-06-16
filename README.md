@@ -121,6 +121,10 @@ To setup the repository locally follow the steps mentioned below:
    Replace `root` with the password you'll pass using
    `--mariadb-root-password`.
 
+> **Note**: The bench setup requires `pkg-config`. On Debian-based systems,
+> install it using `sudo apt-get install pkg-config` before running bench
+> commands.
+
 2. In a separate terminal window, run the following commands:
    ```
    # Create a new site
