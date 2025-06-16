@@ -125,6 +125,18 @@ To setup the repository locally follow the steps mentioned below:
 > install it using `sudo apt-get install pkg-config` before running bench
 > commands.
 
+> **Note**: ERPNext requires Node.js and Yarn for building assets. If `apt` fails
+> to install `nodejs` or `npm` due to dependency issues, install Node.js using
+> [nvm](https://github.com/nvm-sh/nvm):
+>
+> ```bash
+> curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+> export NVM_DIR="$HOME/.nvm"
+> [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+> nvm install 18
+> npm install -g yarn
+> ```
+
 2. In a separate terminal window, run the following commands:
    ```
    # Create a new site

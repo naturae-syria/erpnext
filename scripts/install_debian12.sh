@@ -17,7 +17,7 @@ sudo apt-get update
 log "Installing dependencies"
 sudo apt-get install -y git python3-dev python3-setuptools python3-pip python3-venv \
 build-essential pkg-config redis-server mariadb-server mariadb-client default-libmysqlclient-dev \
-wkhtmltopdf curl nodejs npm
+wkhtmltopdf curl
 }
 
 configure_mariadb() {
@@ -31,11 +31,15 @@ configure_mariadb() {
 }
 
 setup_node() {
-if ! command -v node >/dev/null; then
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-sudo apt-get install -y nodejs
-fi
-sudo npm install -g yarn
+    if ! command -v node >/dev/null; then
+        # Install nvm and Node.js 18
+        curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+        export NVM_DIR="$HOME/.nvm"
+        # shellcheck disable=SC1090
+        [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+        nvm install 18
+    fi
+    npm install -g yarn
 }
 
 install_bench() {
