@@ -73,6 +73,18 @@ if [ "$TYPE" == "server" ]; then bench setup requirements --dev; fi
 
 wait $wkpid
 
+wait_for_redis() {
+    for attempt in {1..30}; do
+        if redis-cli -p 13000 ping >/dev/null 2>&1; then
+            return 0
+        fi
+        sleep 1
+    done
+    echo "Redis failed to start"
+    return 1
+}
+
 bench start &>> ~/frappe-bench/bench_start.log &
+wait_for_redis
 CI=Yes bench build --app frappe &
 bench --site test_site reinstall --yes
