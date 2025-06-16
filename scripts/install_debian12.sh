@@ -49,12 +49,24 @@ bench init --frappe-path https://github.com/frappe/frappe --skip-assets "$BENCH_
 cd "$BENCH_DIR"
 }
 
+wait_for_redis() {
+    local attempts=0
+    local max_attempts=30
+    until redis-cli -p 13000 ping >/dev/null 2>&1; do
+        if [ "$attempts" -ge "$max_attempts" ]; then
+            log "Redis failed to start"
+            return 1
+        fi
+        attempts=$((attempts+1))
+        sleep 1
+    done
+}
+
 start_background_bench() {
     log "Starting temporary bench to launch Redis"
     bench start &> /tmp/bench_start.log &
     BENCH_BG_PID=$!
-    # Give processes time to initialize
-    sleep 5
+    wait_for_redis
 }
 
 stop_background_bench() {
